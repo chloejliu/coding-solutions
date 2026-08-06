@@ -1,0 +1,26 @@
+%% simple_portfolio_data
+n=20;
+rng(5,'v5uniform');
+pbar = ones(n,1)*.03+[rand(n-1,1); 0]*.12;
+rng(5,'v5normal');
+S = randn(n,n);
+S = S'*S;
+S = S/max(abs(diag(S)))*.2;
+S(:,n) = zeros(n,1);
+S(n,:) = zeros(n,1)';
+
+x_unif = ones(n,1)/n;
+
+disp ( (x_unif' * S * x_unif)^0.5 ); %%standard deviation = sqrt(x' * S * x)
+
+cvx_begin
+    cvx_quiet(true)
+    variable x(n)
+    minimize ( quad_form(x, S) )
+    subject to
+        sum(x) == 1;
+        pbar' * x == pbar' * x_unif; %pt b
+        x >= 0; %pt c
+        sum(max(-x, 0)) <= 0.5; %pt d
+cvx_end
+disp(sqrt(cvx_optval));
