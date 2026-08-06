@@ -1,0 +1,189 @@
+rng(0, 'v5uniform');
+n=100;
+m=300;
+A = rand(m, n);
+b = A*ones(n, 1)/2;
+c = -rand(n, 1);
+cvx_begin
+  variable x(n)
+  minimize(c' * x)
+  subject to
+  A*x <= b
+  0 <= x <= 1
+cvx_end
+
+/*
+Calling SDPT3 4.0: 500 variables, 100 equality constraints
+   For improved efficiency, SDPT3 is solving the dual problem.
+------------------------------------------------------------
+
+ num. of constraints = 100
+ dim. of linear var  = 500
+*******************************************************************
+   SDPT3: Infeasible path-following algorithms
+*******************************************************************
+ version  predcorr  gam  expon  scale_data
+    NT      1      0.000   1        0    
+it pstep dstep pinfeas dinfeas  gap      prim-obj      dual-obj    cputime
+-------------------------------------------------------------------
+ 0|0.000|0.000|5.2e+03|2.2e+01|4.8e+06| 1.674155e+05  0.000000e+00| 0:0:00| chol  1  1 
+ 1|0.960|0.944|2.1e+02|1.2e+00|2.3e+05| 8.946901e+03 -3.435520e+02| 0:0:00| chol  1  1 
+ 2|1.000|0.672|2.6e-06|4.0e-01|5.5e+04| 3.214987e+03 -3.148378e+02| 0:0:00| chol  1  1 
+ 3|1.000|1.000|2.9e-05|4.7e-04|2.9e+03| 2.844356e+03  2.753144e+00| 0:0:00| chol  1  1 
+ 4|0.967|1.000|1.1e-06|4.8e-05|9.6e+01| 9.886674e+01  3.172128e+00| 0:0:00| chol  1  1 
+ 5|1.000|1.000|1.2e-08|4.9e-06|6.0e+01| 7.234196e+01  1.233137e+01| 0:0:00| chol  1  1 
+ 6|1.000|0.754|1.8e-09|1.6e-06|3.2e+01| 5.222880e+01  2.053562e+01| 0:0:00| chol  1  1 
+ 7|1.000|0.727|4.4e-10|4.6e-07|1.7e+01| 4.320767e+01  2.611541e+01| 0:0:00| chol  1  1 
+ 8|1.000|0.634|8.5e-11|1.7e-07|9.7e+00| 3.839206e+01  2.873968e+01| 0:0:00| chol  1  1 
+ 9|1.000|0.881|1.4e-11|2.1e-08|5.1e+00| 3.585993e+01  3.073629e+01| 0:0:00| chol  1  1 
+10|0.504|0.801|6.8e-12|4.2e-09|4.0e+00| 3.512385e+01  3.116476e+01| 0:0:00| chol  1  1 
+11|0.947|1.000|3.6e-13|6.1e-12|2.1e+00| 3.388924e+01  3.180692e+01| 0:0:00| chol  1  1 
+12|0.775|0.644|8.2e-14|3.5e-12|1.6e+00| 3.366437e+01  3.209397e+01| 0:0:00| chol  1  1 
+13|0.930|0.970|6.0e-15|1.1e-12|1.1e+00| 3.337883e+01  3.232098e+01| 0:0:00| chol  1  1 
+14|0.985|1.000|7.7e-16|1.0e-12|4.6e-01| 3.296020e+01  3.250099e+01| 0:0:00| chol  1  1 
+15|0.776|1.000|1.8e-15|1.0e-12|2.1e-01| 3.278734e+01  3.258213e+01| 0:0:00| chol  1  1 
+16|0.708|0.975|2.1e-15|1.0e-12|7.6e-02| 3.268765e+01  3.261191e+01| 0:0:00| chol  1  1 
+17|1.000|0.900|1.6e-14|1.1e-12|4.5e-02| 3.265695e+01  3.261147e+01| 0:0:00| chol  1  1 
+18|0.774|0.911|6.0e-15|1.1e-12|9.8e-03| 3.262915e+01  3.261937e+01| 0:0:00| chol  1  1 
+19|1.000|1.000|9.4e-14|1.0e-12|3.1e-03| 3.262286e+01  3.261974e+01| 0:0:00| chol  1  1 
+20|0.974|0.980|5.4e-14|1.0e-12|7.9e-05| 3.262042e+01  3.262034e+01| 0:0:00| chol  1  1 
+21|0.998|1.000|1.2e-14|1.0e-12|1.2e-06| 3.262036e+01  3.262036e+01| 0:0:00| chol  1  1 
+22|0.998|1.000|7.8e-14|1.0e-12|1.5e-08| 3.262036e+01  3.262036e+01| 0:0:00|
+  stop: max(relative gap, infeasibilities) < 1.49e-08
+-------------------------------------------------------------------
+ number of iterations   = 22
+ primal objective value =  3.26203573e+01
+ dual   objective value =  3.26203573e+01
+ gap := trace(XZ)       = 1.46e-08
+ relative gap           = 2.21e-10
+ actual relative gap    = 2.15e-10
+ rel. primal infeas (scaled problem)   = 7.77e-14
+ rel. dual     "        "       "      = 1.00e-12
+ rel. primal infeas (unscaled problem) = 0.00e+00
+ rel. dual     "        "       "      = 0.00e+00
+ norm(X), norm(y), norm(Z) = 2.5e+00, 6.6e+00, 4.6e+01
+ norm(A), norm(b), norm(C) = 1.0e+02, 6.5e+00, 4.3e+02
+ Total CPU time (secs)  = 0.31  
+ CPU time per iteration = 0.01  
+ termination code       =  0
+ DIMACS: 2.6e-13  0.0e+00  1.4e-11  0.0e+00  2.1e-10  2.2e-10
+-------------------------------------------------------------------
+ 
+------------------------------------------------------------
+Status: Solved
+Optimal value (cvx_optval): -33.1672
+*/
+
+rng(0,'v5uniform');
+n=100;
+m=300;
+A=rand(m,n);
+b=A*ones(n,1)/2;
+c=-rand(n,1);
+cvx_begin
+    variable xrlx(n)
+    minimize (c' * xrlx)
+    subject to
+        A * xrlx <= b
+        0 <= xrlx <= 1
+cvx_end
+
+xi = double(0);
+t = linspace(0, 1, 100);
+obj = zeros(1, 100);
+maxviol = zeros(1, 100);
+for i = 1:100
+    xi = double(xrlx >= t(i));
+    obj(i) = c' * xi;
+    maxviol(i) = max(A * xi - b);
+    end
+
+figure;
+subplot(2, 1, 1);
+plot(t, obj, 'b-', 'LineWidth', 1.5);
+xlabel('Threshold t');
+ylabel('Objective Value (c^T \hat{x}');
+grid on;
+
+subplot(2, 1, 2);
+plot(t, maxviol, 'r-', 'LineWidth', 1.5);
+hold on;
+yline(0, 'k--', 'feasible Limit');
+xlabel('Threshold t');
+ylabel('Max Violation max_i (A\hat{x} - b)_i');
+grid on;
+
+U = min(obj(find(maxviol<=0)));
+disp(U - c' * xrlx);
+
+/*
+Calling SDPT3 4.0: 500 variables, 100 equality constraints
+   For improved efficiency, SDPT3 is solving the dual problem.
+------------------------------------------------------------
+
+ num. of constraints = 100
+ dim. of linear var  = 500
+*******************************************************************
+   SDPT3: Infeasible path-following algorithms
+*******************************************************************
+ version  predcorr  gam  expon  scale_data
+    NT      1      0.000   1        0    
+it pstep dstep pinfeas dinfeas  gap      prim-obj      dual-obj    cputime
+-------------------------------------------------------------------
+ 0|0.000|0.000|5.2e+03|2.2e+01|4.8e+06| 1.674155e+05  0.000000e+00| 0:0:00| chol  1  1 
+ 1|0.960|0.944|2.1e+02|1.2e+00|2.3e+05| 8.946901e+03 -3.435520e+02| 0:0:00| chol  1  1 
+ 2|1.000|0.672|2.6e-06|4.0e-01|5.5e+04| 3.214987e+03 -3.148378e+02| 0:0:00| chol  1  1 
+ 3|1.000|1.000|2.9e-05|4.7e-04|2.9e+03| 2.844356e+03  2.753144e+00| 0:0:00| chol  1  1 
+ 4|0.967|1.000|1.1e-06|4.8e-05|9.6e+01| 9.886674e+01  3.172128e+00| 0:0:00| chol  1  1 
+ 5|1.000|1.000|1.2e-08|4.9e-06|6.0e+01| 7.234196e+01  1.233137e+01| 0:0:00| chol  1  1 
+ 6|1.000|0.754|1.8e-09|1.6e-06|3.2e+01| 5.222880e+01  2.053562e+01| 0:0:00| chol  1  1 
+ 7|1.000|0.727|4.4e-10|4.6e-07|1.7e+01| 4.320767e+01  2.611541e+01| 0:0:00| chol  1  1 
+ 8|1.000|0.634|8.5e-11|1.7e-07|9.7e+00| 3.839206e+01  2.873968e+01| 0:0:00| chol  1  1 
+ 9|1.000|0.881|1.4e-11|2.1e-08|5.1e+00| 3.585993e+01  3.073629e+01| 0:0:00| chol  1  1 
+10|0.504|0.801|6.8e-12|4.2e-09|4.0e+00| 3.512385e+01  3.116476e+01| 0:0:00| chol  1  1 
+11|0.947|1.000|3.6e-13|6.1e-12|2.1e+00| 3.388924e+01  3.180692e+01| 0:0:00| chol  1  1 
+12|0.775|0.644|8.2e-14|3.5e-12|1.6e+00| 3.366437e+01  3.209397e+01| 0:0:00| chol  1  1 
+13|0.930|0.970|6.0e-15|1.1e-12|1.1e+00| 3.337883e+01  3.232098e+01| 0:0:00| chol  1  1 
+14|0.985|1.000|7.7e-16|1.0e-12|4.6e-01| 3.296020e+01  3.250099e+01| 0:0:00| chol  1  1 
+15|0.776|1.000|1.8e-15|1.0e-12|2.1e-01| 3.278734e+01  3.258213e+01| 0:0:00| chol  1  1 
+16|0.708|0.975|2.1e-15|1.0e-12|7.6e-02| 3.268765e+01  3.261191e+01| 0:0:00| chol  1  1 
+17|1.000|0.900|1.6e-14|1.1e-12|4.5e-02| 3.265695e+01  3.261147e+01| 0:0:00| chol  1  1 
+18|0.774|0.911|6.0e-15|1.1e-12|9.8e-03| 3.262915e+01  3.261937e+01| 0:0:00| chol  1  1 
+19|1.000|1.000|9.4e-14|1.0e-12|3.1e-03| 3.262286e+01  3.261974e+01| 0:0:00| chol  1  1 
+20|0.974|0.980|5.4e-14|1.0e-12|7.9e-05| 3.262042e+01  3.262034e+01| 0:0:00| chol  1  1 
+21|0.998|1.000|1.2e-14|1.0e-12|1.2e-06| 3.262036e+01  3.262036e+01| 0:0:00| chol  1  1 
+22|0.998|1.000|7.8e-14|1.0e-12|1.5e-08| 3.262036e+01  3.262036e+01| 0:0:00|
+  stop: max(relative gap, infeasibilities) < 1.49e-08
+-------------------------------------------------------------------
+ number of iterations   = 22
+ primal objective value =  3.26203573e+01
+ dual   objective value =  3.26203573e+01
+ gap := trace(XZ)       = 1.46e-08
+ relative gap           = 2.21e-10
+ actual relative gap    = 2.15e-10
+ rel. primal infeas (scaled problem)   = 7.77e-14
+ rel. dual     "        "       "      = 1.00e-12
+ rel. primal infeas (unscaled problem) = 0.00e+00
+ rel. dual     "        "       "      = 0.00e+00
+ norm(X), norm(y), norm(Z) = 2.5e+00, 6.6e+00, 4.6e+01
+ norm(A), norm(b), norm(C) = 1.0e+02, 6.5e+00, 4.3e+02
+ Total CPU time (secs)  = 0.44  
+ CPU time per iteration = 0.02  
+ termination code       =  0
+ DIMACS: 2.6e-13  0.0e+00  1.4e-11  0.0e+00  2.1e-10  2.2e-10
+-------------------------------------------------------------------
+ 
+------------------------------------------------------------
+Status: Solved
+Optimal value (cvx_optval): -33.1672
+ 
+    0.7222
+
+Warning: Error in state of SceneNode.
+String scalar or character vector must have valid interpreter syntax:
+Objective Value (c^T \\hat{x}
+ 
+Warning: Error in state of SceneNode.
+String scalar or character vector must have valid interpreter syntax:
+Max Violation max_i (A\\hat{x} - b)_i
+*/
