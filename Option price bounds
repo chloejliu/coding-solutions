@@ -1,0 +1,31 @@
+F = 0.9;
+C = 1.15;
+S0 = 1;
+prices = [0.06; 0.03; 0.02; 0.01; 1; 1];
+w = zeros(6, 200);
+payoff = zeros(1, 200);
+for i = 1:200
+    S = 0.5 + (i-1)*1.5/199;
+    if S > C
+        payoff(i) = C-S0;
+    elseif F<=S && S<=C
+        payoff(i) = S-S0;
+    else
+        payoff(i) = F-S0;
+    end
+    w(:, i) = [max(0, S-1.1); max(0, S-1.2); max(0, 0.8-S); max(0, 0.7-S); 1.05; S];
+end
+cvx_begin quiet %%upper bound
+    variable cnt(6);
+    minimize (cnt' * prices)
+    subject to
+        cnt' * w >= payoff;
+cvx_end
+disp(cvx_optval);
+cvx_begin quiet %%lower bound
+    variable cnt(6);
+    maximize (cnt' * prices)
+    subject to
+        cnt' * w <= payoff;
+cvx_end
+disp(cvx_optval);
