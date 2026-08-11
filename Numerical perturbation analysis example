@@ -1,0 +1,40 @@
+d1 = 0;
+d2 = 0;
+p_pred = 0;
+for i = 1:3
+    for j = 1:3
+    cvx_begin quiet
+        variable x1;
+        variable x2;
+        dual variable l1;
+        dual variable l2;
+        dual variable l3;
+        Q = [1 -0.5; -0.5 2];
+        x = [x1; x2];
+        minimize (quad_form(x, Q))
+        subject to
+            l1: x1 + 2*x2 <= -2 + d1;
+            l2: x1 - 4*x2 <= -3 + d2;
+            l3: x1 + x2 >= -5;
+        cvx_end
+        if i == 1 && j == 1
+            p_orig = cvx_optval;
+            unperturbed_l1 = l1;
+            unperturbed_l2 = l2;
+        end
+        p_pred = p_orig - unperturbed_l1*d1 - unperturbed_l2*d2;
+        disp(cvx_optval-p_pred);
+        if j == 1
+            d2 = -0.1;
+        elseif j == 2
+            d2 = 0.1;
+        else
+            d2 = 0;
+        end
+    end
+    if i == 1
+        d1 = -0.1;
+    else
+        d1 = 0.1;
+    end
+end
