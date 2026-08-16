@@ -1,0 +1,39 @@
+clear all;
+clc;
+k = 201;
+y = zeros(k, 1);
+t = zeros(k, 1);
+for (i = 1:k) 
+    t(i) = -3+6*(i-1)/(k-1);
+    y(i) = exp(t(i));
+end
+l = 0;
+u = exp(3);
+
+while(u-l >= 0.001)
+    g = (l+u)/2;
+    cvx_begin quiet
+    variable a0;
+    variable a1;
+    variable a2;
+    variable b1;
+    variable b2;
+    subject to
+        1+b1*t+b2*t.^2 >= 0;
+        a0+a1*t+a2*t.^2 - y.*(1+b1*t+b2*t.^2) <= g*(1+b1*t+b2*t.^2);
+        a0+a1*t+a2*t.^2 - y.*(1+b1*t+b2*t.^2) >= -g*(1+b1*t+b2*t.^2);
+    cvx_end
+    disp(cvx_status);
+    if (strcmp(cvx_status,'Solved'))
+        u = g;
+        A0 = a0;
+        A1 = a1;
+        A2 = a2;
+        B1 = b1;
+        B2 = b2;
+    else
+        l = g;
+    end
+end
+
+disp([A0; A1; A2; B1; B2; g]);
