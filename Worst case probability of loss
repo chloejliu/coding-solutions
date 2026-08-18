@@ -1,0 +1,58 @@
+clear all;
+clc;
+
+u1 = 8; %%mean for R1
+u2 = 20; %%mean for R2
+o1 = 6; %%standard deviation for R1
+o2 = 17.5; %%standard deviation for R2
+p = -0.25 %%correlation coefficient
+n = 100;
+
+%{
+p_loss = prob(R1+R2<=0)
+E(R1-u1)*(R2-u2)=p*o1*o2
+%}
+
+prob1 = zeros(n, 1);
+prob2 = zeros(n, 1);
+r = linspace(-30, 70, n);
+tmp1 = 0;
+tmp2 = 0;
+for(j = 1:100)
+    tmp1 = tmp1 + exp(-(r(j)-u1)^2/(2*o1^2));
+    tmp2 = tmp2 + exp(-(r(j)-u2)^2/(2*o2^2));
+end
+
+for(i=1:100)
+    prob1(i) = exp(-(r(i)-u1)^2/(2*o1^2))/tmp1;
+    prob2(i) = exp(-(r(i)-u2)^2/(2*o2^2))/tmp2;
+end
+
+mask = zeros(n);
+for(i = 1:n)
+    for(j = 1:n)
+        if (r(i)+r(j) <= 0)
+            mask(i, j) = 1;
+        end
+    end
+end
+
+cvx_begin quiet
+    variable joint(n, n);
+    maximize (trace(mask' * joint))
+    subject to
+        sum(joint, 2) == prob1;
+        sum(joint, 1)' == prob2;
+        joint >= 0;
+        sum(sum(((r-u1)'*(r-u2)) .* joint)) == p*o1*o2;
+cvx_end
+disp(cvx_optval) %%p_loss
+
+%%claude plotting
+[R1grid, R2grid] = meshgrid(r, r);
+figure;
+mesh(R1grid, R2grid, joint);
+xlabel('r_1');
+ylabel('r_2');
+zlabel('joint probability');
+title('Optimal joint distribution (mesh)');
